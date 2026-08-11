@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barbearia Zin | Otto Zin — Laguna/SC</title>
+<link rel="icon" type="image/png" href="imagens/ottofav.png">
+<meta name="description" content="Barbearia Zin, com o barbeiro Otto Zin. Corte, degradê, barba e platina em Laguna/SC. Agende agora.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0B0B0C;
+    --graphite:#17161A;
+    --graphite-2:#201F23;
+    --gold:#C6A15B;
+    --gold-deep:#8C6A3F;
+    --bone:#F3EFE7;
+    --muted:#9C9892;
+  }
+  *{ scroll-behavior:smooth; }
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:'Manrope', sans-serif;
+  }
+  .font-display{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:0.02em;
+  }
+  .text-gold{ color:var(--gold); }
+  .bg-gold{ background:var(--gold); }
+  .border-gold{ border-color:var(--gold); }
+  .bg-graphite{ background:var(--graphite); }
+  .bg-graphite-2{ background:var(--graphite-2); }
+  .text-muted{ color:var(--muted); }
+
+  /* Faixa estilo barbeiro */
+  .barber-stripe{
+    height:10px;
+    background:repeating-linear-gradient(
+      -45deg,
+      var(--gold) 0px, var(--gold) 14px,
+      transparent 14px, transparent 28px,
+      var(--bone) 28px, var(--bone) 42px,
+      transparent 42px, transparent 56px
+    );
+    opacity:0.9;
+  }
+
+  /* Cartão de serviço estilo "comanda" */
+  .ticket-card{
+    background:var(--graphite);
+    border:1px solid rgba(198,161,91,0.25);
+    position:relative;
+    transition:transform .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .ticket-card::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:1px;
+    background-image:linear-gradient(to right, rgba(198,161,91,0.5) 50%, transparent 50%);
+    background-size:12px 1px;
+  }
+  .ticket-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--gold);
+    background:var(--graphite-2);
+  }
+  .ticket-card.selected{
+    border-color:var(--gold);
+    background:var(--graphite-2);
+    box-shadow:0 0 0 1px var(--gold), 0 12px 30px -12px rgba(198,161,91,0.35);
+  }
+
+  .price-badge{
+    border:1px solid var(--gold);
+    color:var(--gold);
+  }
+
+  .emblem{
+    width:180px;height:180px;border-radius:9999px;
+    border:1px solid rgba(198,161,91,0.4);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .emblem::before{
+    content:"";
+    position:absolute;inset:14px;
+    border:1px solid rgba(198,161,91,0.55);
+    border-radius:9999px;
+  }
+
+  input[type="text"], select{
+    background:var(--graphite-2);
+    border:1px solid rgba(198,161,91,0.3);
+    color:var(--bone);
+  }
+  input[type="text"]:focus, select:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(198,161,91,0.18);
+  }
+  input::placeholder{ color:#6f6c67; }
+
+  @media (prefers-reduced-motion: reduce){
+    .ticket-card{ transition:none; }
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 z-40 backdrop-blur bg-black/70 border-b border-white/5">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
+    <span class="font-display text-2xl tracking-wide">ZIN <span class="text-gold">BARBEARIA</span></span>
+    <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
+      <a href="#servicos" class="hover:text-gold transition">Serviços</a>
+      <a href="#agendar" class="hover:text-gold transition">Agendar</a>
+      <a href="#confirmar" class="hover:text-gold transition">Confirmar</a>
+      <a href="#localizacao" class="hover:text-gold transition">Localização</a>
+    </nav>
+    <a href="#agendar" class="text-xs sm:text-sm font-semibold px-4 py-2 border border-gold text-gold rounded-full hover:bg-gold hover:text-black transition">
+      Agendar horário
+    </a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative pt-32 pb-16 px-5 sm:px-8 overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gold/10 blur-3xl"></div>
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center relative">
+    <div>
+      
+      <h1 class="font-display text-5xl sm:text-6xl leading-[0.95] mb-6">
+        SEU CORTE.<br>
+        SUA <span class="text-gold">ATITUDE.</span><br>
+        SUA VEZ.
+      </h1>
+      <p class="text-muted text-base sm:text-lg max-w-md mb-8">
+        Na Barbearia Zin, cada corte é feito para você sair diferente de como entrou — mais alinhado, mais confiante, com a régua no seu estilo.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 mb-10">
+        <a href="#agendar" class="text-center px-6 py-3 rounded-full bg-gold text-black font-bold hover:brightness-110 transition">
+          Agendar meu horário
+        </a>
+        <a href="#servicos" class="text-center px-6 py-3 rounded-full border border-white/20 text-bone hover:border-gold hover:text-gold transition">
+          Ver cortes e valores
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div class="bg-graphite border border-white/5 rounded-xl p-4">
+          <p class="text-gold font-semibold mb-1 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            Endereço
+          </p>
+          <p class="text-muted">Rua do Avaí, nº 52<br>Laguna — SC</p>
+        </div>
+        <div class="bg-graphite border border-white/5 rounded-xl p-4">
+          <p class="text-gold font-semibold mb-1 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            Horários
+          </p>
+          <p class="text-muted">Segunda a Sábado<br>09h–12h · 13:30h–20h</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hidden md:flex justify-center">
+      <div class="emblem">
+        <span class="font-display text-6xl text-gold">zin</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="barber-stripe"></div>
+
+<!-- SERVIÇOS -->
+<section id="servicos" class="py-20 px-5 sm:px-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-12 text-center">
+
+      <h2 class="font-display text-4xl sm:text-5xl">ESCOLHA SEU SERVIÇO</h2>
+      <p class="text-muted mt-3 max-w-xl mx-auto">Toque em um card para selecionar. Sua escolha é levada automaticamente para o agendamento.</p>
+    </div>
+
+    <div id="services-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Cards gerados via JS -->
+    </div>
+  </div>
+</section>
+
+<div class="barber-stripe"></div>
+
+<!-- AGENDAMENTO / CAL.COM -->
+<section id="agendar" class="py-20 px-5 sm:px-8 bg-graphite">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-10 text-center">
+      <p class="uppercase text-xs tracking-[0.3em] text-gold mb-3">Passo 1</p>
+      <h2 class="font-display text-4xl sm:text-5xl">ESCOLHA O DIA E HORÁRIO</h2>
+      <p class="text-muted mt-3 max-w-xl mx-auto">
+        Serviço selecionado:
+        <span id="servico-label-agenda" class="text-gold font-semibold">nenhum ainda — escolha acima</span>
+      </p>
+    </div>
+
+    <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
+      <iframe
+      id="cal-embed"
+      src="https://cal.com/otto-zin/horario-na-barbearia"
+      width="100%"
+      height="700"
+      style="border:none;"
+      loading="lazy"
+      title="Agenda Otto Zin - Cal.com">
+    </iframe>
+    </div>
+    <p class="text-xs text-muted mt-3 text-center">
+      Não carregou o calendário? <a href="https://cal.com/terror-ff-m5duug/cortes" target="_blank" class="text-gold underline">Abra a agenda em uma nova aba</a>.
+    </p>
+  </div>
+</section>
+
+<div class="barber-stripe"></div>
+
+
+<!-- CONFIRMAÇÃO WHATSAPP -->
+<section id="confirmar" class="py-20 px-5 sm:px-8">
+  <div class="max-w-xl mx-auto">
+    <div class="mb-10 text-center">
+      <p class="uppercase text-xs tracking-[0.3em] text-gold mb-3">Passo 2</p>
+      <h2 class="font-display text-4xl sm:text-5xl">CONFIRME COM O OTTO</h2>
+      <p class="text-muted mt-3">
+        Depois de marcar no calendário, confirme rapidinho pelo WhatsApp com seu nome e o serviço escolhido.
+      </p>
+    </div>
+
+    <form id="whatsapp-form" class="bg-graphite border border-white/10 rounded-2xl p-6 sm:p-8 space-y-5">
+      <div>
+        <label for="nome" class="block text-sm text-muted mb-2">Seu nome</label>
+        <input type="text" id="nome" name="nome" placeholder="Ex: João Silva" required
+          class="w-full rounded-lg px-4 py-3">
+      </div>
+
+      <div>
+        <label for="servico" class="block text-sm text-muted mb-2">Serviço escolhido</label>
+        <select id="servico" name="servico" required class="w-full rounded-lg px-4 py-3">
+          <option value="" disabled selected>Selecione um serviço</option>
+          <option>Corte Navalhado - R$ 30,00</option>
+          <option>Barba - R$ 30,00</option>
+          <option>Sobrancelha - R$10,00</option>
+          <option>Luzes - R$ 100,00</option>
+          <option>Nevou/Platinado - R$ 130,00</option>
+          <option>Pigmentação - R$ 30,00</option>
+          <option>Cabelo + Barba + Sombrancelha - R$ 60,00</option>
+          <option> Cabelo + sobrancelha + bigode - R4 40,00</option>
+
+        </select>
+      </div>
+
+      <button type="submit"
+        class="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-gold text-black font-bold hover:brightness-110 transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.87 9.87 0 0012.04 2zm0 18.12h-.01a8.2 8.2 0 01-4.17-1.14l-.3-.18-3.14.82.84-3.06-.19-.31a8.22 8.22 0 01-1.26-4.37c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.17 8.17 0 012.41 5.83c0 4.55-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.17.24-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.14-.24-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.42h-.48c-.17 0-.43.06-.66.31-.22.24-.86.85-.86 2.06s.89 2.39 1.01 2.55c.12.17 1.75 2.67 4.24 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.16-.48-.28z"/></svg>
+        Confirmar via WhatsApp
+      </button>
+      <p class="text-xs text-muted text-center">Você será direcionado ao WhatsApp do Otto com sua mensagem já pronta.</p>
+    </form>
+  </div>
+</section>
+
+<div class="barber-stripe"></div>
+
+<!-- GALERIA DE CORTES -->
+<section id="galeria" class="py-20 px-5 sm:px-8 bg-graphite">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-12 text-center">
+      <h2 class="font-display text-4xl sm:text-5xl">GALERIA DE CORTES</h2>
+      <p class="text-muted mt-3 max-w-xl mx-auto">Confira alguns dos trabalhos realizados pelo Otto Zin.</p>
+    </div>
+
+    <!-- Grid de 2 colunas (2 imagens por linha, fotos maiores) -->
+    <div class="grid grid-cols-2 gap-4 sm:gap-6">
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte1.png" alt="Corte 1" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte2.png" alt="Corte 2" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte3.png" alt="Corte 3" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte4.png" alt="Corte 4" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte5.png" alt="Corte 5" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte6.png" alt="Corte 6" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-lg sm:rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte7.png" alt="Corte 7" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-lg sm:rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte8.png" alt="Corte 8" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-lg sm:rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte9.png" alt="Corte 9" class="w-full h-full object-cover">
+      </div>
+      <div class="aspect-square bg-graphite-2 border border-white/10 rounded-lg sm:rounded-xl overflow-hidden hover:border-gold transition shadow-lg">
+        <IMG src="imagens/corte10.png" alt="Corte 10" class="w-full h-full object-cover">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="barber-stripe"></div>
+<br>
+<!-- LOCALIZAÇÃO / GOOGLE MAPS -->
+
+<div style="width: 100%; max-width: 450px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  <iframe 
+    src="https://www.google.com/maps/embed?pb=!4v1785888411042!6m8!1m7!1sU3_Ih8LUi3ORaupuS6YPmA!2m2!1d-28.46054536339588!2d-48.7900570686131!3f295.2697!4f0!5f0.7820865974627469" 
+    width="100%" 
+    height="280" 
+    style="border:0; display: block;" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="strict-origin-when-cross-origin">
+  </iframe>
+</div>
+
+    <div class="mt-6 flex justify-center">
+      <a href="https://maps.google.com/?q=-28.460545,-48.790057" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-black font-semibold transition text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        Abrir rota no Google Maps
+      </a>
+    </div>
+  </div>
+</section>
+<!-- FOOTER -->
+<footer class="py-14 px-5 sm:px-8 bg-black">
+  <div class="max-w-6xl mx-auto grid sm:grid-cols-3 gap-8 text-sm">
+    <div>
+      <p class="font-display text-2xl mb-3">ZIN <span class="text-gold">BARBEARIA</span></p>
+      <p class="text-muted">Rua do Avaí, nº 52<br>Laguna — SC</p>
+    </div>
+    <div>
+      <p class="text-gold font-semibold mb-3">Horário de atendimento</p>
+      <p class="text-muted">Terça a Sábado<br>09h às 12h — 13:30h às 20h</p>
+    </div>
+    <div>
+      <p class="text-gold font-semibold mb-3">Redes</p>
+      <a href="https://instagram.com/otto_ducorte" target="_blank" class="inline-flex items-center gap-2 text-muted hover:text-gold transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.97.24 2.43.4a4.9 4.9 0 011.77 1.15 4.9 4.9 0 011.15 1.77c.16.46.35 1.26.4 2.43.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.97-.4 2.43a4.9 4.9 0 01-1.15 1.77 4.9 4.9 0 01-1.77 1.15c-.46.16-1.26.35-2.43.4-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.97-.24-2.43-.4a4.9 4.9 0 01-1.77-1.15 4.9 4.9 0 01-1.15-1.77c-.16-.46-.35-1.26-.4-2.43C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.24-1.97.4-2.43a4.9 4.9 0 011.15-1.77A4.9 4.9 0 015.6 1.8c.46-.16 1.26-.35 2.43-.4C9.3 1.34 9.68 1.33 12 1.33V2.2zm0 1.65c-3.14 0-3.5.01-4.74.07-.95.04-1.47.2-1.81.34-.46.18-.78.39-1.13.73-.34.35-.55.67-.73 1.13-.14.34-.3.86-.34 1.81-.06 1.24-.07 1.6-.07 4.74s.01 3.5.07 4.74c.04.95.2 1.47.34 1.81.18.46.39.78.73 1.13.35.34.67.55 1.13.73.34.14.86.3 1.81.34 1.24.06 1.6.07 4.74.07s3.5-.01 4.74-.07c.95-.04 1.47-.2 1.81-.34.46-.18.78-.39 1.13-.73.34-.35.55-.67.73-1.13.14-.34-.3-.86.34-1.81.06-1.24.07-1.6.07-4.74s-.01-3.5-.07-4.74c-.04-.95-.2-1.47-.34-1.81a3.25 3.25 0 00-.73-1.13 3.25 3.25 0 00-1.13-.73c-.34-.14-.86-.3-1.81-.34-1.24-.06-1.6-.07-4.74-.07zm0 4.2a4.95 4.95 0 110 9.9 4.95 4.95 0 010-9.9zm0 8.17a3.22 3.22 0 100-6.44 3.22 3.22 0 000 6.44zm6.3-8.36a1.16 1.16 0 11-2.31 0 1.16 1.16 0 012.31 0z"/></svg>
+        @otto_ducorte
+      </a>
+    </div>
+  </div>
+  <p class="text-center text-xs text-muted/60 mt-10">© 2026 Barbearia Zin — Otto Zin. Todos os direitos reservados.</p>
+</footer>
+
+<script>
+  // ---------- Dados dos serviços ----------
+  const services = [
+    { name: "Corte navalhado ", price: "R$ 30,00" },
+    { name: "Barba", price: "R$ 30,00" },
+    { name: "Sombrancelha", price: "R$ 10,00" },
+    { name: "Luzes", price: "R$ 100,00" },
+    { name: "Platinado/Nevou", price: "R$ 130,00" },
+    { name: "Pigmentação", price: "R$ 30,00" },
+    { name: "Cabelo + Barba + Sobrancelha", price: "R$ 60,00" },
+    { name: "Cabelo + Sobrancelha + Bigode", price: "R$ 40,00" },
+
+  ];
+
+  const grid = document.getElementById('services-grid');
+  const selectServico = document.getElementById('servico');
+  const labelAgenda = document.getElementById('servico-label-agenda');
+
+  services.forEach((s, i) => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'ticket-card rounded-2xl p-6 text-left';
+    card.dataset.name = s.name;
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <h3 class="font-display text-2xl leading-tight">${s.name}</h3>
+        <span class="price-badge shrink-0 text-sm font-bold rounded-full px-3 py-1 whitespace-nowrap">${s.price}</span>
+      </div>
+      <p class="text-muted text-sm">Toque para selecionar este serviço.</p>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+
+      const fullLabel = `${s.name} — ${s.price}`;
+
+      labelAgenda.textContent = fullLabel;
+      labelAgenda.classList.remove('text-gold');
+      labelAgenda.classList.add('text-gold');
+
+      // Pré-seleciona no formulário do WhatsApp
+      [...selectServico.options].forEach(opt => {
+        if (opt.textContent.trim() === fullLabel) {
+          selectServico.value = opt.value;
+        }
+      });
+
+      document.getElementById('agendar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    grid.appendChild(card);
+  });
+
+  // ---------- Redirecionamento WhatsApp ----------
+  const WHATSAPP_NUMBER = '5551981281840';
+
+  const form = document.getElementById('whatsapp-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById('nome').value.trim();
+    const servico = document.getElementById('servico').value;
+
+    if (!nome || !servico) return;
+
+    const mensagem = `Olá Otto! Acabei de fazer um agendamento pelo site da Barbearia Zin. Meu nome é ${nome} e escolhi o serviço ${servico}. Pode me confirmar o horário?`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+    window.open(url, '_blank');
+  });
+</script>
+
+</body>
+</html>
